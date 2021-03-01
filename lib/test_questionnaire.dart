@@ -73,7 +73,7 @@ final testQuestionnaire = Questionnaire(
                   item: [
                     QuestionnaireItem(
                       linkId: 'pmhx/group/heart/dz',
-                      text: 'You fucked up, I don\'t have heard disease',
+                      text: 'You fucked up, I don\'t have heart disease',
                       type: QuestionnaireItemType.boolean,
                     ),
                     QuestionnaireItem(
@@ -115,7 +115,7 @@ final testQuestionnaire = Questionnaire(
                 item: [
                   QuestionnaireItem(
                     linkId: 'pmhx/group/kidney/dz',
-                    text: 'You fucked up, I don\'t have lung disease',
+                    text: 'You fucked up, I don\'t have kidney disease',
                     type: QuestionnaireItemType.boolean,
                   ),
                   QuestionnaireItem(

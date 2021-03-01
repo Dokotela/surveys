@@ -28,53 +28,56 @@ class FhirSurveyDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(index);
-    print(survey.surveyItems.length);
     return SafeArea(
       child: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                CircularPercentIndicator(
-                  radius: 60.0,
-                  lineWidth: 5.0,
-                  percent: index / survey.surveyItems.length,
-                  center: new Text(
-                      '${((index / survey.surveyItems.length) * 100).toInt()}%'),
-                  progressColor: Colors.green,
-                )
-              ],
-            ),
-            Text(survey.surveyItems[index].text),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => FhirSurveyDisplay(
-                          survey,
-                          index - 1 < 0
-                              ? survey.surveyItems.length - 1
-                              : index - 1))),
-                  icon: Icon(Icons.forward),
-                  label: Text('Back'),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => FhirSurveyDisplay(
-                          survey,
-                          index + 1 >= survey.surveyItems.length
-                              ? 0
-                              : index + 1))),
-                  icon: Icon(Icons.forward),
-                  label: Text('Next'),
-                ),
-              ],
-            ),
-          ],
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  CircularPercentIndicator(
+                    radius: 60.0,
+                    lineWidth: 5.0,
+                    percent: index / survey.surveyItems.length,
+                    center: new Text(
+                        '${((index / survey.surveyItems.length) * 100).toInt()}%'),
+                    progressColor: Colors.green,
+                  )
+                ],
+              ),
+              Text(survey.surveyItems[index].text),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => FhirSurveyDisplay(
+                                survey,
+                                index - 1 < 0
+                                    ? survey.surveyItems.length - 1
+                                    : index - 1))),
+                    icon: Icon(Icons.forward),
+                    label: Text('Back'),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => FhirSurveyDisplay(
+                                survey,
+                                index + 1 >= survey.surveyItems.length
+                                    ? 0
+                                    : index + 1))),
+                    icon: Icon(Icons.forward),
+                    label: Text('Next'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
