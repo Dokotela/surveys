@@ -1,10 +1,9 @@
 import 'package:fhir/r4.dart';
-import 'package:fhir_surveys/views/survey_view.dart';
-import 'package:fhir_surveys/surveys/prapare.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'surveys/test_questionnaire.dart';
+import '_internal/constants/constants.dart';
+import 'ui/views/survey_view.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();

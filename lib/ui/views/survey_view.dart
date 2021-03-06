@@ -1,4 +1,5 @@
-import 'package:fhir_surveys/controller/survey_controller.dart';
+import 'package:fhir_surveys/controllers/survey_controller.dart';
+import 'package:fhir_surveys/ui/styled_components/styled_components.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -51,8 +52,8 @@ class SurveyView extends StatelessWidget {
                     controller!.text,
                     style: TextStyle(fontSize: 32),
                   ),
-                  Text(controller!.types),
-                  Text(controller!.answers),
+                  IntegerResponse(controller!.setCurrentAnswer),
+                  DateTimeResponse(controller!.setCurrentAnswer),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [

@@ -1,7 +1,6 @@
 import 'package:fhir/r4.dart';
+import 'package:fhir_surveys/models/survey_item.dart';
 import 'package:get/get.dart';
-
-import '../model/survey_item.dart';
 
 class SurveyController extends GetxController {
   /// PROPERTIES
@@ -10,6 +9,7 @@ class SurveyController extends GetxController {
   List<String> _keys = [];
   late Questionnaire _questionnaire;
   QuestionnaireResponse? _response;
+  var _curAnswer = '';
 
   @override
   void onInit() {
@@ -53,9 +53,15 @@ class SurveyController extends GetxController {
     return temp;
   }
 
+  /// SETTER FUNCTIONS
+  void setCurrentAnswer(String answer) {
+    print(answer);
+    _curAnswer = answer;
+  }
+
   void next() {
+    print(_curAnswer);
     _index.value = _index.value + 1 >= _keys.length ? 0 : _index.value + 1;
-    update();
   }
 
   void back() =>
