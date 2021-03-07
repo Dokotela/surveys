@@ -1,13 +1,12 @@
 import 'package:fhir_surveys/controllers/survey_controller.dart';
-import 'package:fhir_surveys/ui/styled_components/styled_components.dart';
+import 'package:fhir_surveys/ui/views/survey_view_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class SurveyView extends StatelessWidget {
   final controller = Get.put(SurveyController());
-
-  /// http://hl7.org/fhir/R4/codesystem-questionnaire-item-control.html
+  final viewController = Get.put(SurveyViewController());
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +49,9 @@ class SurveyView extends StatelessWidget {
                   ),
                   Text(
                     controller!.text,
-                    style: TextStyle(fontSize: 32),
+                    style: TextStyle(fontSize: 24),
                   ),
-                  IntegerResponse(controller!.setCurrentAnswer),
-                  DateTimeResponse(controller!.setCurrentAnswer),
+                  SingleChildScrollView(child: viewController!.answers()),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [

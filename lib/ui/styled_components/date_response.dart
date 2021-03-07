@@ -31,7 +31,7 @@ class DateResponse extends StatelessWidget {
             (date) {
               if (date != null) {
                 dateTime.value = date;
-                setAnswer(dateTime.value);
+                setAnswer(dateTime.value?.toIso8601String() ?? '');
               }
             },
           ),

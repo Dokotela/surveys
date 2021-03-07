@@ -30,7 +30,7 @@ class TimeResponse extends StatelessWidget {
             (time) {
               if (time != null) {
                 dateTime.value = time;
-                setAnswer(dateTime.value);
+                setAnswer(dateTime.value.toString());
               }
             },
           ),

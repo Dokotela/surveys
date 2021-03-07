@@ -42,16 +42,10 @@ class SurveyController extends GetxController {
   int get index => _index.value;
   int get total => _surveyItems.keys.length;
   String get text => _surveyItems[_keys[_index.value]]?.text ?? '';
-  String get types =>
-      _surveyItems[_keys[_index.value]]?.item.type.toString() ?? '';
-  String get answers {
-    final answers = _surveyItems[_keys[_index.value]]?.item.answerOption;
-    String temp = '';
-    if (answers != null) {
-      answers.forEach((answer) => temp += '${answer.toJson()}\n');
-    }
-    return temp;
-  }
+  QuestionnaireItemType? get type =>
+      _surveyItems[_keys[_index.value]]?.item.type;
+  List<QuestionnaireAnswerOption>? get answers =>
+      _surveyItems[_keys[_index.value]]?.item.answerOption;
 
   /// SETTER FUNCTIONS
   void setCurrentAnswer(String answer) {

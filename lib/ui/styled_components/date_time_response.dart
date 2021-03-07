@@ -42,7 +42,7 @@ class DateTimeResponse extends StatelessWidget {
                   dateTime.value?.hour ?? 0,
                   dateTime.value?.minute ?? 0,
                 );
-                setAnswer(dateTime.value);
+                setAnswer(dateTime.value?.toIso8601String() ?? '');
               }
             },
           ),
@@ -67,7 +67,7 @@ class DateTimeResponse extends StatelessWidget {
                   time.hour,
                   time.minute,
                 );
-                setAnswer(dateTime.value);
+                setAnswer(dateTime.value?.toIso8601String() ?? '');
               }
             },
           ),

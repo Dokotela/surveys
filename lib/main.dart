@@ -27,15 +27,16 @@ class HomePage extends StatelessWidget {
               Column(
                 children: [
                   ElevatedButton(
-                      onPressed: () => Get.to(TempView()),
-                      child: Text('Temporary View')),
-                  ElevatedButton(
-                      onPressed: () => Get.to(() => SurveyView(),
-                          arguments: [testQuestionnaire]),
+                      onPressed: () => Get.to(
+                            () => SurveyView(),
+                            arguments: [testQuestionnaire],
+                          ),
                       child: Text('Test Questionnaire')),
                   ElevatedButton(
-                      onPressed: () => Get.to(SurveyView(),
-                          arguments: [Questionnaire.fromJson(prapareSurvey)]),
+                      onPressed: () => Get.to(
+                            () => SurveyView(),
+                            arguments: [Questionnaire.fromJson(prapareSurvey)],
+                          ),
                       child: Text('Prapare Questionnaire'))
                 ],
               ),
@@ -44,12 +45,5 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class TempView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Text('Something or other');
   }
 }
