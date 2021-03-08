@@ -13,7 +13,8 @@ class SurveyViewController extends GetxController {
         return BooleanResponse(controller.setCurrentAnswer);
 
       case QuestionnaireItemType.choice:
-        return ChoiceResponse(controller.setCurrentAnswer, controller.answers!);
+        return ChoiceResponse(
+            controller.setCurrentAnswer, controller.choiceResponses);
 
       case QuestionnaireItemType.date:
         return DateResponse(controller.setCurrentAnswer);

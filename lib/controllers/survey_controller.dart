@@ -9,7 +9,6 @@ class SurveyController extends GetxController {
   List<String> _keys = [];
   late Questionnaire _questionnaire;
   QuestionnaireResponse? _response;
-  var _curAnswer = '';
 
   @override
   void onInit() {
@@ -39,22 +38,50 @@ class SurveyController extends GetxController {
     return complete / _surveyItems.keys.length;
   }
 
+  SurveyItem? get _curSurveyItem => _surveyItems[_keys[_index.value]];
   int get index => _index.value;
   int get total => _surveyItems.keys.length;
   String get text => _surveyItems[_keys[_index.value]]?.text ?? '';
   QuestionnaireItemType? get type =>
       _surveyItems[_keys[_index.value]]?.item.type;
-  List<QuestionnaireAnswerOption>? get answers =>
-      _surveyItems[_keys[_index.value]]?.item.answerOption;
+  List<String> get choiceResponses {
+    final returnStrings = <String>[];
+    if (_surveyItems[_keys[_index.value]]?.item.answerOption != null) {
+      for (var answer
+          in _surveyItems[_keys[_index.value]]!.item.answerOption!) {
+        returnStrings.add(answer.valueCoding?.display ?? '');
+      }
+    }
+    return returnStrings;
+  }
 
   /// SETTER FUNCTIONS
   void setCurrentAnswer(String answer) {
-    print(answer);
-    _curAnswer = answer;
+    if (_curSurveyItem?.item.type == QuestionnaireItemType.choice) {
+      _curSurveyItem!.response ??= QuestionnaireResponseItem(item: []);
+      _curSurveyItem!.response!.item!.clear();
+      _curSurveyItem!.response!.item!.add(QuestionnaireResponseItem(answer: [
+        QuestionnaireResponseAnswer(
+            valueCoding: _curSurveyItem!.item.answerOption!
+                .firstWhere((element) => element.valueCoding?.display == answer)
+                .valueCoding)
+      ]));
+    }
+    print(_curSurveyItem!.response!.toJson());
   }
 
+  // "answerBoolean" : <boolean>
+  // "answerDecimal" : <decimal>
+  // "answerInteger" : <integer>
+  // "answerDate" : "<date>"
+  // "answerDateTime" : "<dateTime>"
+  // "answerTime" : "<time>"
+  // "answerString" : "<string>"
+  // "answerCoding" : { Coding }
+  // "answerQuantity" : { Quantity }
+  // "answerReference" : { Reference(Any) }
+
   void next() {
-    print(_curAnswer);
     _index.value = _index.value + 1 >= _keys.length ? 0 : _index.value + 1;
   }
 

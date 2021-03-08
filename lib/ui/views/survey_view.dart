@@ -11,62 +11,54 @@ class SurveyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Obx(
-              () => Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          child: CircularPercentIndicator(
-                            radius: 60.0,
-                            lineWidth: 5.0,
-                            percent: controller!.index / controller!.total,
-                            footer: Text(
-                              'Screen\n'
-                              '${controller!.index + 1}/${controller!.total}',
-                            ),
-                            progressColor: Colors.green,
-                          ),
-                        ),
-                        CircularPercentIndicator(
-                          radius: 60.0,
-                          lineWidth: 5.0,
-                          percent: controller!.percentComplete,
-                          footer: Text('${controller!.percentComplete.toInt()}'
-                              '%\nComplete'),
-                          progressColor: Colors.green,
-                        )
-                      ],
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Obx(
+            () => Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CircularPercentIndicator(
+                      radius: 60.0,
+                      lineWidth: 5.0,
+                      percent: controller!.index / controller!.total,
+                      footer: Text(
+                        'Screen\n'
+                        '${controller!.index + 1}/${controller!.total}',
+                      ),
+                      progressColor: Colors.green,
                     ),
-                  ),
-                  Text(
-                    controller!.text,
-                    style: TextStyle(fontSize: 24),
-                  ),
-                  SingleChildScrollView(child: viewController!.answers()),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () => controller!.back(),
-                        child: Text('Back'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => controller!.next(),
-                        child: Text('Next'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                    CircularPercentIndicator(
+                      radius: 60.0,
+                      lineWidth: 5.0,
+                      percent: controller!.percentComplete,
+                      footer: Text('${controller!.percentComplete.toInt()}'
+                          '%\nComplete'),
+                      progressColor: Colors.green,
+                    )
+                  ],
+                ),
+                Text(controller!.text, style: TextStyle(fontSize: 24)),
+                Expanded(
+                    child: SingleChildScrollView(
+                        child: viewController!.answers())),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => controller!.back(),
+                      child: Text('Back'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => controller!.next(),
+                      child: Text('Next'),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
