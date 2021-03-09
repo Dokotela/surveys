@@ -1,15 +1,97 @@
 import 'package:fhir/r4.dart';
-import 'package:fhir_surveys/models/survey_item.dart';
 import 'package:get/get.dart';
 
 class SurveyController extends GetxController {
   /// PROPERTIES
-  late Map<String, SurveyItem> _surveyItems = {};
   final _index = 0.obs;
-  List<String> _keys = [];
+  final List<String> _keys = [];
+  final _totalQuestions = 0.obs;
+  final _questionsAnswered = 0.obs;
   late Questionnaire _questionnaire;
-  QuestionnaireResponse? _response;
+  QuestionnaireResponse _response = QuestionnaireResponse();
+  QuestionnaireItem? _currentItem;
 
+  /// GETTER FUNCTIONS
+  double get percentComplete => _totalQuestions.value == 0
+      ? 0
+      : _questionsAnswered.value / _totalQuestions.value;
+  int get index => _index.value;
+  int get totalScreens => _keys.length;
+  String get text => _currentItem?.text ?? '';
+  QuestionnaireItemType? get type =>
+      _currentItem?.type ?? QuestionnaireItemType.display;
+  List<String> get choiceResponses => _currentItem?.answerOption == null
+      ? []
+      : _currentItem!.answerOption!
+          .map((answer) => answer.valueCoding?.display ?? '')
+          .toList();
+  QuestionnaireResponseItem _getAnswerItem(
+      String linkId, List<QuestionnaireResponseItem> items) {
+    for (var item in items) {
+      if (item.linkId == linkId) {
+        return item;
+      }
+      if (item.item != null) {
+        if (item.item!.isNotEmpty) {
+          return _getAnswerItem(linkId, item.item!);
+        }
+      }
+    }
+    throw Exception('could not find linkId');
+  }
+
+  /// SETTER FUNCTIONS
+  bool _setCurrentItem(String linkId, List<QuestionnaireItem> items) {
+    for (var item in items) {
+      if (item.linkId == linkId) {
+        _currentItem = item;
+        return true;
+      }
+      if (item.item != null) {
+        if (item.item!.isNotEmpty) {
+          return _setCurrentItem(linkId, item.item!);
+        }
+      }
+    }
+    throw Exception('could not find linkId');
+  }
+
+  void setCurrentAnswer(String answer) {
+    final responseAnswer = _getAnswerItem(_keys[index], _response.item!);
+    if (!(_currentItem?.repeats?.value ?? true)) {
+      responseAnswer.answer!.clear();
+    }
+    if (_currentItem?.type == QuestionnaireItemType.boolean) {
+      responseAnswer.answer!.add(QuestionnaireResponseAnswer(
+          valueBoolean: Boolean(answer.toString())));
+    }
+    if (_currentItem?.type == QuestionnaireItemType.choice) {
+      responseAnswer.answer!.add(QuestionnaireResponseAnswer(
+          valueCoding: _currentItem!.answerOption!
+              .firstWhere((element) => element.valueCoding?.display == answer)
+              .valueCoding));
+    }
+    print(_response.toJson());
+  }
+
+  /// EVENTS
+  void next() {
+    _index.value = _index.value + 1 >= _keys.length ? 0 : _index.value + 1;
+    _setCurrentItem(_keys[_index.value], _questionnaire.item!);
+  }
+
+  void back() {
+    _index.value = _index.value - 1 < 0 ? _keys.length - 1 : _index.value - 1;
+    _setCurrentItem(_keys[_index.value], _questionnaire.item!);
+  }
+
+  void save() {
+    // for(var item in _questionnaire.item!){
+    //   _response.add()
+    // }
+  }
+
+  /// INIT
   @override
   void onInit() {
     _questionnaire = Get.arguments[0];
@@ -19,97 +101,51 @@ class SurveyController extends GetxController {
             status: QuestionnaireResponseStatus.in_progress,
             item: <QuestionnaireResponseItem>[]);
     if (_questionnaire.item != null) {
-      _getItems(_questionnaire.item!, _response?.item);
+      if (_response.item == null) {
+        _response = _response.copyWith(item: []);
+      }
+      _response = _response.copyWith(
+          item: _createResponse(
+        _questionnaire.item!,
+        _response.item!,
+      ));
+      _currentItem = _questionnaire.item?[0];
     }
-    _keys.addAll(_surveyItems.keys);
+
     super.onInit();
   }
 
-  /// GETTER FUNCTIONS
-  double get percentComplete {
-    int complete = 0;
-    _surveyItems.forEach((k, v) {
-      if (v.response?.answer != null) {
-        if (v.response!.answer!.isNotEmpty) {
-          complete++;
+  List<QuestionnaireResponseItem> _createResponse(
+    List<QuestionnaireItem> items,
+    List<QuestionnaireResponseItem> responses,
+  ) {
+    for (var item in items) {
+      var index =
+          responses.indexWhere((element) => element.linkId == item.linkId);
+      if (index == -1) {
+        responses.add(QuestionnaireResponseItem(
+          linkId: item.linkId,
+          text: item.text,
+        ));
+      } else {
+        responses[index] = responses[index].copyWith(text: item.text);
+      }
+      index = responses.indexWhere((element) => element.linkId == item.linkId);
+      if (item.type != QuestionnaireItemType.group &&
+          item.type != QuestionnaireItemType.display) {
+        _totalQuestions.value++;
+        if (responses[index].answer == null) {
+          responses[index] = responses[index].copyWith(answer: []);
         }
       }
-    });
-    return complete / _surveyItems.keys.length;
-  }
-
-  SurveyItem? get _curSurveyItem => _surveyItems[_keys[_index.value]];
-  int get index => _index.value;
-  int get total => _surveyItems.keys.length;
-  String get text => _surveyItems[_keys[_index.value]]?.text ?? '';
-  QuestionnaireItemType? get type =>
-      _surveyItems[_keys[_index.value]]?.item.type;
-  List<String> get choiceResponses {
-    final returnStrings = <String>[];
-    if (_surveyItems[_keys[_index.value]]?.item.answerOption != null) {
-      for (var answer
-          in _surveyItems[_keys[_index.value]]!.item.answerOption!) {
-        returnStrings.add(answer.valueCoding?.display ?? '');
-      }
-    }
-    return returnStrings;
-  }
-
-  /// SETTER FUNCTIONS
-  void setCurrentAnswer(String answer) {
-    if (_curSurveyItem?.item.type == QuestionnaireItemType.choice) {
-      _curSurveyItem!.response ??= QuestionnaireResponseItem(item: []);
-      _curSurveyItem!.response!.item!.clear();
-      _curSurveyItem!.response!.item!.add(QuestionnaireResponseItem(answer: [
-        QuestionnaireResponseAnswer(
-            valueCoding: _curSurveyItem!.item.answerOption!
-                .firstWhere((element) => element.valueCoding?.display == answer)
-                .valueCoding)
-      ]));
-    }
-    print(_curSurveyItem!.response!.toJson());
-  }
-
-  // "answerBoolean" : <boolean>
-  // "answerDecimal" : <decimal>
-  // "answerInteger" : <integer>
-  // "answerDate" : "<date>"
-  // "answerDateTime" : "<dateTime>"
-  // "answerTime" : "<time>"
-  // "answerString" : "<string>"
-  // "answerCoding" : { Coding }
-  // "answerQuantity" : { Quantity }
-  // "answerReference" : { Reference(Any) }
-
-  void next() {
-    _index.value = _index.value + 1 >= _keys.length ? 0 : _index.value + 1;
-  }
-
-  void back() =>
-      _index.value = _index.value - 1 < 0 ? _keys.length - 1 : _index.value - 1;
-
-  void _getItems(
-    List<QuestionnaireItem> items,
-    List<QuestionnaireResponseItem>? responses,
-  ) {
-    for (final item in items) {
-      _surveyItems[item.linkId ?? '${_surveyItems.keys.length}'] =
-          SurveyItem.fromItem(
-        item.copyWith(item: []),
-        responses
-            ?.firstWhere((response) => response.linkId == item.linkId,
-                orElse: () => QuestionnaireResponseItem(
-                    linkId: item.linkId, text: item.text))
-            .copyWith(item: []),
-      );
+      _keys.add(item.linkId!);
       if (item.item != null) {
-        _getItems(
-            item.item!,
-            responses
-                ?.firstWhere((response) => response.linkId == item.linkId,
-                    orElse: () => QuestionnaireResponseItem())
-                .item);
+        if (responses[index].item == null) {
+          responses[index] = responses[index].copyWith(item: []);
+        }
+        _createResponse(item.item!, responses[index].item!);
       }
     }
+    return responses;
   }
 }
