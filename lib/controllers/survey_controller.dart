@@ -6,15 +6,16 @@ class SurveyController extends GetxController {
   final _index = 0.obs;
   final List<String> _keys = [];
   final _totalQuestions = 0.obs;
-  final _questionsAnswered = 0.obs;
+  int _questionsAnswered = 0;
   late Questionnaire _questionnaire;
   QuestionnaireResponse _response = QuestionnaireResponse();
   QuestionnaireItem? _currentItem;
+  String groupText = '';
 
   /// GETTER FUNCTIONS
   double get percentComplete => _totalQuestions.value == 0
       ? 0
-      : _questionsAnswered.value / _totalQuestions.value;
+      : _questionsAnswered / _totalQuestions.value;
   int get index => _index.value;
   int get totalScreens => _keys.length;
   String get text => _currentItem?.text ?? '';
@@ -43,33 +44,89 @@ class SurveyController extends GetxController {
   /// SETTER FUNCTIONS
   bool _setCurrentItem(String linkId, List<QuestionnaireItem> items) {
     for (var item in items) {
+      if (item.type == QuestionnaireItemType.group) {
+        groupText = item.text ?? '';
+      }
       if (item.linkId == linkId) {
         _currentItem = item;
         return true;
       }
       if (item.item != null) {
         if (item.item!.isNotEmpty) {
-          return _setCurrentItem(linkId, item.item!);
+          var tempCurrent = _setCurrentItem(linkId, item.item!);
+          if (tempCurrent) {
+            return true;
+          }
         }
       }
     }
-    throw Exception('could not find linkId');
+    return false;
   }
 
   void setCurrentAnswer(String answer) {
     final responseAnswer = _getAnswerItem(_keys[index], _response.item!);
-    if (!(_currentItem?.repeats?.value ?? true)) {
+    if (responseAnswer.answer!.isEmpty) {
+      _questionsAnswered++;
+    }
+    if (!(_currentItem?.repeats?.value ?? false)) {
       responseAnswer.answer!.clear();
     }
-    if (_currentItem?.type == QuestionnaireItemType.boolean) {
-      responseAnswer.answer!.add(QuestionnaireResponseAnswer(
-          valueBoolean: Boolean(answer.toString())));
-    }
-    if (_currentItem?.type == QuestionnaireItemType.choice) {
-      responseAnswer.answer!.add(QuestionnaireResponseAnswer(
-          valueCoding: _currentItem!.answerOption!
-              .firstWhere((element) => element.valueCoding?.display == answer)
-              .valueCoding));
+
+    switch (_currentItem?.type) {
+      case QuestionnaireItemType.boolean:
+        {
+          responseAnswer.answer!.add(QuestionnaireResponseAnswer(
+              valueBoolean: Boolean(answer.toString())));
+        }
+        break;
+      case QuestionnaireItemType.integer:
+        {
+          responseAnswer.answer!.add(QuestionnaireResponseAnswer(
+              valueInteger: Integer(answer.toString())));
+        }
+        break;
+      case QuestionnaireItemType.text:
+        {
+          responseAnswer.answer!
+              .add(QuestionnaireResponseAnswer(valueString: answer.toString()));
+        }
+        break;
+      case QuestionnaireItemType.string:
+        {
+          responseAnswer.answer!
+              .add(QuestionnaireResponseAnswer(valueString: answer.toString()));
+        }
+        break;
+      case QuestionnaireItemType.date:
+        {
+          responseAnswer.answer!.add(
+              QuestionnaireResponseAnswer(valueDate: Date(answer.toString())));
+        }
+        break;
+      case QuestionnaireItemType.datetime:
+        {
+          responseAnswer.answer!.add(QuestionnaireResponseAnswer(
+              valueDateTime: FhirDateTime(answer.toString())));
+        }
+        break;
+      case QuestionnaireItemType.time:
+        {
+          responseAnswer.answer!.add(
+              QuestionnaireResponseAnswer(valueTime: Time(answer.toString())));
+        }
+        break;
+      case QuestionnaireItemType.choice:
+        {
+          responseAnswer.answer!.add(QuestionnaireResponseAnswer(
+              valueCoding: _currentItem!.answerOption!
+                  .firstWhere(
+                      (element) => element.valueCoding?.display == answer)
+                  .valueCoding));
+        }
+        break;
+      default:
+        print(_currentItem?.type);
+        break;
     }
     print(_response.toJson());
   }
@@ -83,12 +140,6 @@ class SurveyController extends GetxController {
   void back() {
     _index.value = _index.value - 1 < 0 ? _keys.length - 1 : _index.value - 1;
     _setCurrentItem(_keys[_index.value], _questionnaire.item!);
-  }
-
-  void save() {
-    // for(var item in _questionnaire.item!){
-    //   _response.add()
-    // }
   }
 
   /// INIT
@@ -111,7 +162,6 @@ class SurveyController extends GetxController {
       ));
       _currentItem = _questionnaire.item?[0];
     }
-
     super.onInit();
   }
 

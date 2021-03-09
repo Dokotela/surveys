@@ -54,8 +54,12 @@ class DisplayQuestion extends StatelessWidget {
           ))
         : Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(controller.text, style: TextStyle(fontSize: 24)),
+                Container(height: Get.height * .03),
+                Text(controller.groupText, style: TextStyle(fontSize: 24)),
+                Container(height: Get.height * .03),
+                Text(controller.text, style: TextStyle(fontSize: 18)),
                 Expanded(child: SingleChildScrollView(child: _byType())),
               ],
             ),

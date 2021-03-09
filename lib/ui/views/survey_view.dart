@@ -30,9 +30,6 @@ class SurveyView extends StatelessWidget {
                         onPressed: () => controller!.back(),
                         child: Text('Back')),
                     ElevatedButton(
-                        onPressed: () => controller!.save(),
-                        child: Text('Save')),
-                    ElevatedButton(
                         onPressed: () => controller!.next(),
                         child: Text('Next')),
                   ],

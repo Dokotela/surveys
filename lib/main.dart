@@ -29,12 +29,6 @@ class HomePage extends StatelessWidget {
                   ElevatedButton(
                       onPressed: () => Get.to(
                             () => SurveyView(),
-                            arguments: [boolQuestionnaire],
-                          ),
-                      child: Text('Boolean Questionnaire')),
-                  ElevatedButton(
-                      onPressed: () => Get.to(
-                            () => SurveyView(),
                             arguments: [testQuestionnaire],
                           ),
                       child: Text('Test Questionnaire')),
