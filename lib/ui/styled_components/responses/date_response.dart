@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DateResponse extends StatelessWidget {
-  DateResponse(this.setAnswer, {String? initialDate}) {
-    initialValue = initialDate == null
+  DateResponse(this.setAnswer, List<String> initialAnswer) {
+    initialValue = initialAnswer.isEmpty
         ? DateTime.now()
-        : DateTime.tryParse(initialDate) ?? DateTime.now();
+        : DateTime.tryParse(initialAnswer[0]) ?? DateTime.now();
   }
 
   final Function setAnswer;
@@ -31,13 +31,14 @@ class DateResponse extends StatelessWidget {
             (date) {
               if (date != null) {
                 dateTime.value = date;
-                setAnswer(dateTime.value?.toIso8601String() ?? '');
+                setAnswer(dateTime.value?.toIso8601String() ?? initialValue);
               }
             },
           ),
           child: Text('Click to Enter Date'),
         ),
-        Obx(() => Text(dateTime.value?.toIso8601String() ?? '')),
+        Obx(() => Text(dateTime.value?.toIso8601String() ??
+            initialValue.toIso8601String())),
       ],
     );
   }

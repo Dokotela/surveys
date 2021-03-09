@@ -2,28 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SingleChoiceResponse extends StatelessWidget {
-  SingleChoiceResponse(this.setAnswer, this.answers);
+  SingleChoiceResponse(this.setAnswer, this.answers, this.initialAnswer);
 
   final Function setAnswer;
   final List<String> answers;
+  final List<String> initialAnswer;
   final TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    List<RadioListTile> options = [];
-    final Rx<int> choice = Rx<int>(-1);
+    List<Widget> options = [];
+    final Rx<int> choice = Rx<int>(
+      answers.indexWhere((element) =>
+          initialAnswer.isEmpty ? false : element == initialAnswer[0]),
+    );
 
     for (var i = 0; i < answers.length; i++) {
       if (answers.isNotEmpty) {
         options.add(
-          RadioListTile(
-            title: Text(answers[i]),
-            value: i,
-            groupValue: choice.value,
-            onChanged: (changed) {
-              setAnswer(answers[i]);
-              choice.value = i;
-            },
+          Obx(
+            () => RadioListTile(
+              title: Text(answers[i]),
+              value: i,
+              groupValue: choice.value,
+              onChanged: (changed) {
+                setAnswer(answers[i]);
+                choice.value = i;
+              },
+            ),
           ),
         );
       }

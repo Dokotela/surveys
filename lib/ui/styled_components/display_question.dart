@@ -11,38 +11,39 @@ class DisplayQuestion extends StatelessWidget {
   StatelessWidget _byType() {
     switch (controller.type) {
       case QuestionnaireItemType.boolean:
-        return BooleanResponse(controller.setCurrentAnswer);
+        return BooleanResponse(controller.setCurrentAnswer, controller.initial);
 
       case QuestionnaireItemType.choice:
         {
           if (controller.multipleChoice) {
-            return MultipleChoiceResponse(
-                controller.setCurrentAnswer, controller.choiceResponses);
+            return MultipleChoiceResponse(controller.setCurrentAnswer,
+                controller.choiceResponses, controller.initial);
           } else {
-            return SingleChoiceResponse(
-                controller.setCurrentAnswer, controller.choiceResponses);
+            return SingleChoiceResponse(controller.setCurrentAnswer,
+                controller.choiceResponses, controller.initial);
           }
         }
       case QuestionnaireItemType.date:
-        return DateResponse(controller.setCurrentAnswer);
+        return DateResponse(controller.setCurrentAnswer, controller.initial);
 
       case QuestionnaireItemType.datetime:
-        return DateTimeResponse(controller.setCurrentAnswer);
+        return DateTimeResponse(
+            controller.setCurrentAnswer, controller.initial);
 
       case QuestionnaireItemType.decimal:
-        return DecimalResponse(controller.setCurrentAnswer);
+        return DecimalResponse(controller.setCurrentAnswer, controller.initial);
 
       case QuestionnaireItemType.integer:
-        return IntegerResponse(controller.setCurrentAnswer);
+        return IntegerResponse(controller.setCurrentAnswer, controller.initial);
 
       case QuestionnaireItemType.string:
-        return StringResponse(controller.setCurrentAnswer);
+        return StringResponse(controller.setCurrentAnswer, controller.initial);
 
       case QuestionnaireItemType.text:
-        return TextResponse(controller.setCurrentAnswer);
+        return TextResponse(controller.setCurrentAnswer, controller.initial);
 
       case QuestionnaireItemType.time:
-        return TimeResponse(controller.setCurrentAnswer);
+        return TimeResponse(controller.setCurrentAnswer, controller.initial);
 
       default:
         return Container();

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MultipleChoiceResponse extends StatelessWidget {
-  MultipleChoiceResponse(this.setAnswer, this.answers);
+  MultipleChoiceResponse(this.setAnswer, this.answers, this.initialAnswer);
 
   final Function setAnswer;
   final List<String> answers;
+  final List<String> initialAnswer;
   final TextEditingController controller = TextEditingController();
 
   @override
@@ -16,7 +17,13 @@ class MultipleChoiceResponse extends StatelessWidget {
 
     for (var i = 0; i < answers.length; i++) {
       if (answers.isNotEmpty) {
-        choice.add(false.obs);
+        if (initialAnswer.indexWhere((element) => element == answers[i]) ==
+            -1) {
+          choice.add(false.obs);
+        } else {
+          choice.add(true.obs);
+        }
+
         options.add(
           Row(
             children: [

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DateTimeResponse extends StatelessWidget {
-  DateTimeResponse(this.setAnswer, {String? initialDateTime}) {
-    initialDate = initialDateTime == null
+  DateTimeResponse(this.setAnswer, List<String> initialAnswer) {
+    initialDate = initialAnswer.isEmpty
         ? DateTime.now()
-        : DateTime.tryParse(initialDateTime) ?? DateTime.now();
-    initialTime = initialDateTime == null
+        : DateTime.tryParse(initialAnswer[0]) ?? DateTime.now();
+    initialTime = initialAnswer.isEmpty
         ? TimeOfDay.now()
         : TimeOfDay.fromDateTime(
-            DateTime.tryParse(initialDateTime) ?? DateTime.now());
+            DateTime.tryParse(initialAnswer[0]) ?? DateTime.now());
   }
 
   final Function setAnswer;
@@ -42,7 +42,16 @@ class DateTimeResponse extends StatelessWidget {
                   dateTime.value?.hour ?? 0,
                   dateTime.value?.minute ?? 0,
                 );
-                setAnswer(dateTime.value?.toIso8601String() ?? '');
+                setAnswer(
+                  dateTime.value?.toIso8601String() ??
+                      DateTime(
+                        initialDate.year,
+                        initialDate.month,
+                        initialDate.day,
+                        initialTime.hour,
+                        initialTime.minute,
+                      ),
+                );
               }
             },
           ),
@@ -67,13 +76,33 @@ class DateTimeResponse extends StatelessWidget {
                   time.hour,
                   time.minute,
                 );
-                setAnswer(dateTime.value?.toIso8601String() ?? '');
+                setAnswer(
+                  dateTime.value?.toIso8601String() ??
+                      DateTime(
+                        initialDate.year,
+                        initialDate.month,
+                        initialDate.day,
+                        initialTime.hour,
+                        initialTime.minute,
+                      ),
+                );
               }
             },
           ),
           child: Text('Click to Enter Time'),
         ),
-        Obx(() => Text(dateTime.value?.toIso8601String() ?? '')),
+        Obx(
+          () => Text(
+            dateTime.value?.toIso8601String() ??
+                DateTime(
+                  initialDate.year,
+                  initialDate.month,
+                  initialDate.day,
+                  initialTime.hour,
+                  initialTime.minute,
+                ).toIso8601String(),
+          ),
+        ),
       ],
     );
   }

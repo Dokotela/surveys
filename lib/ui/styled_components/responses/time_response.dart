@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class TimeResponse extends StatelessWidget {
-  TimeResponse(this.setAnswer, {String? initialTime}) {
-    initialValue = initialTime == null
+  TimeResponse(this.setAnswer, List<String> initialAnswer) {
+    initialValue = initialAnswer.isEmpty
         ? TimeOfDay.now()
         : TimeOfDay.fromDateTime(
-            DateTime.tryParse(initialTime) ?? DateTime.now());
+            DateTime.tryParse(initialAnswer[0]) ?? DateTime.now());
   }
 
   final Function setAnswer;
@@ -36,7 +36,7 @@ class TimeResponse extends StatelessWidget {
           ),
           child: Text('Click to Enter Time'),
         ),
-        Obx(() => Text(dateTime.value?.toString() ?? '')),
+        Obx(() => Text(dateTime.value?.toString() ?? initialValue.toString())),
       ],
     );
   }

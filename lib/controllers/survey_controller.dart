@@ -1,4 +1,6 @@
 import 'package:fhir/r4.dart';
+import 'package:fhir_surveys/_internal/utils/initial_answer.dart';
+import 'package:fhir_surveys/_internal/utils/utils.dart';
 import 'package:get/get.dart';
 
 class SurveyController extends GetxController {
@@ -20,6 +22,11 @@ class SurveyController extends GetxController {
   int get totalScreens => _keys.length;
   String get text => _currentItem?.text ?? '';
   bool get multipleChoice => _currentItem?.repeats?.value ?? false;
+  List<String> get initial => initialAnswer(
+      initialResponse: _currentItem?.initial,
+      type: _currentItem?.type,
+      responseAnswer:
+          _getAnswerItem(_keys[_index.value], _response.item!).answer!);
   QuestionnaireItemType? get type =>
       _currentItem?.type ?? QuestionnaireItemType.display;
   List<String> get choiceResponses => _currentItem?.answerOption == null
@@ -39,7 +46,7 @@ class SurveyController extends GetxController {
         }
       }
     }
-    throw Exception('could not find linkId');
+    throw Exception('could not find linkId: $linkId');
   }
 
   /// SETTER FUNCTIONS
@@ -76,72 +83,7 @@ class SurveyController extends GetxController {
     if (!(_currentItem?.repeats?.value ?? false)) {
       responseAnswer.answer!.clear();
     }
-
-    switch (_currentItem?.type) {
-      case QuestionnaireItemType.boolean:
-        {
-          responseAnswer.answer!.add(QuestionnaireResponseAnswer(
-              valueBoolean: Boolean(answer.toString())));
-        }
-        break;
-      case QuestionnaireItemType.integer:
-        {
-          responseAnswer.answer!.add(QuestionnaireResponseAnswer(
-              valueInteger: Integer(answer.toString())));
-        }
-        break;
-      case QuestionnaireItemType.text:
-        {
-          responseAnswer.answer!
-              .add(QuestionnaireResponseAnswer(valueString: answer.toString()));
-        }
-        break;
-      case QuestionnaireItemType.string:
-        {
-          responseAnswer.answer!
-              .add(QuestionnaireResponseAnswer(valueString: answer.toString()));
-        }
-        break;
-      case QuestionnaireItemType.date:
-        {
-          responseAnswer.answer!.add(
-              QuestionnaireResponseAnswer(valueDate: Date(answer.toString())));
-        }
-        break;
-      case QuestionnaireItemType.datetime:
-        {
-          responseAnswer.answer!.add(QuestionnaireResponseAnswer(
-              valueDateTime: FhirDateTime(answer.toString())));
-        }
-        break;
-      case QuestionnaireItemType.time:
-        {
-          responseAnswer.answer!.add(
-              QuestionnaireResponseAnswer(valueTime: Time(answer.toString())));
-        }
-        break;
-      case QuestionnaireItemType.choice:
-        {
-          if (remove) {
-            responseAnswer.answer!.remove(QuestionnaireResponseAnswer(
-                valueCoding: _currentItem!.answerOption!
-                    .firstWhere(
-                        (element) => element.valueCoding?.display == answer)
-                    .valueCoding));
-          } else {
-            responseAnswer.answer!.add(QuestionnaireResponseAnswer(
-                valueCoding: _currentItem!.answerOption!
-                    .firstWhere(
-                        (element) => element.valueCoding?.display == answer)
-                    .valueCoding));
-          }
-        }
-        break;
-      default:
-        print(_currentItem?.type);
-        break;
-    }
-    print(_response.toJson());
+    addAnswer(answer, responseAnswer, _currentItem, remove);
   }
 
   /// EVENTS
