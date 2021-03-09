@@ -26,7 +26,7 @@ class SurveyController extends GetxController {
       initialResponse: _currentItem?.initial,
       type: _currentItem?.type,
       responseAnswer:
-          _getAnswerItem(_keys[_index.value], _response.item!).answer!);
+          _getAnswerItem(_keys[_index.value], _response.item!)?.answer ?? []);
   QuestionnaireItemType? get type =>
       _currentItem?.type ?? QuestionnaireItemType.display;
   List<String> get choiceResponses => _currentItem?.answerOption == null
@@ -34,7 +34,7 @@ class SurveyController extends GetxController {
       : _currentItem!.answerOption!
           .map((answer) => answer.valueCoding?.display ?? '')
           .toList();
-  QuestionnaireResponseItem _getAnswerItem(
+  QuestionnaireResponseItem? _getAnswerItem(
       String linkId, List<QuestionnaireResponseItem> items) {
     for (var item in items) {
       if (item.linkId == linkId) {
@@ -42,11 +42,13 @@ class SurveyController extends GetxController {
       }
       if (item.item != null) {
         if (item.item!.isNotEmpty) {
-          return _getAnswerItem(linkId, item.item!);
+          final responseItem = _getAnswerItem(linkId, item.item!);
+          if (responseItem != null) {
+            return responseItem;
+          }
         }
       }
     }
-    throw Exception('could not find linkId: $linkId');
   }
 
   /// SETTER FUNCTIONS
@@ -77,7 +79,7 @@ class SurveyController extends GetxController {
 
   void setCurrentAnswer(String answer, [bool remove = false]) {
     final responseAnswer = _getAnswerItem(_keys[index], _response.item!);
-    if (responseAnswer.answer!.isEmpty) {
+    if (responseAnswer!.answer!.isEmpty) {
       _questionsAnswered++;
     }
     if (!(_currentItem?.repeats?.value ?? false)) {
