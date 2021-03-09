@@ -19,6 +19,7 @@ class SurveyController extends GetxController {
   int get index => _index.value;
   int get totalScreens => _keys.length;
   String get text => _currentItem?.text ?? '';
+  bool get multipleChoice => _currentItem?.repeats?.value ?? false;
   QuestionnaireItemType? get type =>
       _currentItem?.type ?? QuestionnaireItemType.display;
   List<String> get choiceResponses => _currentItem?.answerOption == null
@@ -42,28 +43,32 @@ class SurveyController extends GetxController {
   }
 
   /// SETTER FUNCTIONS
-  bool _setCurrentItem(String linkId, List<QuestionnaireItem> items) {
+  int _setCurrentItem(String linkId, List<QuestionnaireItem> items, int level) {
     for (var item in items) {
-      if (item.type == QuestionnaireItemType.group) {
-        groupText = item.text ?? '';
-      }
       if (item.linkId == linkId) {
         _currentItem = item;
-        return true;
+        if (item.type == QuestionnaireItemType.group) {
+          groupText = item.text ?? '';
+        }
+        return level;
       }
       if (item.item != null) {
         if (item.item!.isNotEmpty) {
-          var tempCurrent = _setCurrentItem(linkId, item.item!);
-          if (tempCurrent) {
-            return true;
+          var foundLevel = _setCurrentItem(linkId, item.item!, level + 1);
+          if (foundLevel != -1) {
+            if (item.type == QuestionnaireItemType.group &&
+                level + 1 == foundLevel) {
+              groupText = item.text ?? '';
+            }
+            return foundLevel;
           }
         }
       }
     }
-    return false;
+    return -1;
   }
 
-  void setCurrentAnswer(String answer) {
+  void setCurrentAnswer(String answer, [bool remove = false]) {
     final responseAnswer = _getAnswerItem(_keys[index], _response.item!);
     if (responseAnswer.answer!.isEmpty) {
       _questionsAnswered++;
@@ -117,11 +122,19 @@ class SurveyController extends GetxController {
         break;
       case QuestionnaireItemType.choice:
         {
-          responseAnswer.answer!.add(QuestionnaireResponseAnswer(
-              valueCoding: _currentItem!.answerOption!
-                  .firstWhere(
-                      (element) => element.valueCoding?.display == answer)
-                  .valueCoding));
+          if (remove) {
+            responseAnswer.answer!.remove(QuestionnaireResponseAnswer(
+                valueCoding: _currentItem!.answerOption!
+                    .firstWhere(
+                        (element) => element.valueCoding?.display == answer)
+                    .valueCoding));
+          } else {
+            responseAnswer.answer!.add(QuestionnaireResponseAnswer(
+                valueCoding: _currentItem!.answerOption!
+                    .firstWhere(
+                        (element) => element.valueCoding?.display == answer)
+                    .valueCoding));
+          }
         }
         break;
       default:
@@ -134,12 +147,12 @@ class SurveyController extends GetxController {
   /// EVENTS
   void next() {
     _index.value = _index.value + 1 >= _keys.length ? 0 : _index.value + 1;
-    _setCurrentItem(_keys[_index.value], _questionnaire.item!);
+    _setCurrentItem(_keys[_index.value], _questionnaire.item!, 0);
   }
 
   void back() {
     _index.value = _index.value - 1 < 0 ? _keys.length - 1 : _index.value - 1;
-    _setCurrentItem(_keys[_index.value], _questionnaire.item!);
+    _setCurrentItem(_keys[_index.value], _questionnaire.item!, 0);
   }
 
   /// INIT

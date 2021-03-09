@@ -14,9 +14,15 @@ class DisplayQuestion extends StatelessWidget {
         return BooleanResponse(controller.setCurrentAnswer);
 
       case QuestionnaireItemType.choice:
-        return ChoiceResponse(
-            controller.setCurrentAnswer, controller.choiceResponses);
-
+        {
+          if (controller.multipleChoice) {
+            return MultipleChoiceResponse(
+                controller.setCurrentAnswer, controller.choiceResponses);
+          } else {
+            return SingleChoiceResponse(
+                controller.setCurrentAnswer, controller.choiceResponses);
+          }
+        }
       case QuestionnaireItemType.date:
         return DateResponse(controller.setCurrentAnswer);
 
