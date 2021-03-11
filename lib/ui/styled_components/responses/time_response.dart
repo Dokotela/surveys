@@ -36,7 +36,10 @@ class TimeResponse extends StatelessWidget {
           ),
           child: Text('Click to Enter Time'),
         ),
-        Obx(() => Text(dateTime.value?.toString() ?? initialValue.toString())),
+        Obx(() => Text(
+              dateTime.value?.toString() ?? initialValue.toString(),
+              style: TextStyle(fontSize: 20),
+            )),
       ],
     );
   }

@@ -51,25 +51,38 @@ class DisplayQuestion extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return controller.type == QuestionnaireItemType.group
-        ? Center(
-            child: Text(
-            controller.text,
-            style: TextStyle(fontSize: 24),
-            textAlign: TextAlign.center,
-          ))
-        : Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(height: Get.height * .03),
-                Text(controller.groupText, style: TextStyle(fontSize: 24)),
-                Container(height: Get.height * .03),
-                Text(controller.text, style: TextStyle(fontSize: 18)),
-                Expanded(child: SingleChildScrollView(child: _byType())),
-              ],
-            ),
-          );
-  }
+  Widget build(BuildContext context) => Expanded(
+        child: Container(
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: controller.type == QuestionnaireItemType.group
+                ? Center(
+                    child: Text(
+                    controller.text,
+                    style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ))
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(height: Get.height * .03),
+                      Text(controller.groupText,
+                          style: TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.bold)),
+                      Container(height: Get.height * .03),
+                      Text(controller.text, style: TextStyle(fontSize: 24)),
+                      Expanded(
+                        child: Scrollbar(
+                          isAlwaysShown: true,
+                          child: SingleChildScrollView(
+                            child: _byType(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+        ),
+      );
 }

@@ -37,8 +37,9 @@ class DateResponse extends StatelessWidget {
           ),
           child: Text('Click to Enter Date'),
         ),
-        Obx(() => Text(dateTime.value?.toIso8601String() ??
-            initialValue.toIso8601String())),
+        Obx(() => Text(
+            dateTime.value?.toIso8601String() ?? initialValue.toIso8601String(),
+            style: TextStyle(fontSize: 20))),
       ],
     );
   }

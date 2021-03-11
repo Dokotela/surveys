@@ -40,7 +40,7 @@ class MultipleChoiceResponse extends StatelessWidget {
                   },
                 ),
               ),
-              Text(answers[i]),
+              Expanded(child: Text(answers[i], style: TextStyle(fontSize: 20))),
             ],
           ),
         );

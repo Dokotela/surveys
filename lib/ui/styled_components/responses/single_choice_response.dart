@@ -22,7 +22,7 @@ class SingleChoiceResponse extends StatelessWidget {
         options.add(
           Obx(
             () => RadioListTile(
-              title: Text(answers[i]),
+              title: Text(answers[i], style: TextStyle(fontSize: 20)),
               value: i,
               groupValue: choice.value,
               onChanged: (changed) {

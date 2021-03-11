@@ -21,7 +21,7 @@ class BooleanResponse extends StatelessWidget {
       () => Column(
         children: [
           ListTile(
-            title: Text('True'),
+            title: Text('True', style: TextStyle(fontSize: 20)),
             leading: Radio(
               value: true,
               groupValue: boolean.value,
@@ -32,7 +32,7 @@ class BooleanResponse extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text('False'),
+            title: Text('False', style: TextStyle(fontSize: 20)),
             leading: Radio(
               value: false,
               groupValue: boolean.value,

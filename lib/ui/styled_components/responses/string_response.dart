@@ -13,5 +13,6 @@ class StringResponse extends StatelessWidget {
   Widget build(BuildContext context) => TextFormField(
         controller: controller,
         onChanged: (text) => setAnswer(text),
+        style: TextStyle(fontSize: 20),
       );
 }

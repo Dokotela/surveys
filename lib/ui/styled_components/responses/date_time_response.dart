@@ -91,8 +91,7 @@ class DateTimeResponse extends StatelessWidget {
           ),
           child: Text('Click to Enter Time'),
         ),
-        Obx(
-          () => Text(
+        Obx(() => Text(
             dateTime.value?.toIso8601String() ??
                 DateTime(
                   initialDate.year,
@@ -101,8 +100,7 @@ class DateTimeResponse extends StatelessWidget {
                   initialTime.hour,
                   initialTime.minute,
                 ).toIso8601String(),
-          ),
-        ),
+            style: TextStyle(fontSize: 20))),
       ],
     );
   }

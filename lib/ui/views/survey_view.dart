@@ -11,30 +11,34 @@ class SurveyView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Obx(
-            () => Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                PercentIndicator(
-                  controller!.index,
-                  controller!.totalScreens,
-                  controller!.percentComplete,
-                ),
-                DisplayQuestion(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                        onPressed: () => controller!.back(),
-                        child: Text('Back')),
-                    ElevatedButton(
-                        onPressed: () => controller!.next(),
-                        child: Text('Next')),
-                  ],
-                ),
-              ],
+        body: Container(
+          color: Colors.blue[200],
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Obx(
+              () => Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  PercentIndicator(
+                    controller!.index,
+                    controller!.totalScreens,
+                    controller!.percentComplete,
+                  ),
+                  Container(height: Get.height * .02),
+                  DisplayQuestion(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                          onPressed: () => controller!.back(),
+                          child: Text('Back', style: TextStyle(fontSize: 24))),
+                      ElevatedButton(
+                          onPressed: () => controller!.next(),
+                          child: Text('Next', style: TextStyle(fontSize: 24))),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

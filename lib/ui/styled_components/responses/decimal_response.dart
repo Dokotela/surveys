@@ -16,5 +16,6 @@ class DecimalResponse extends StatelessWidget {
         controller: controller,
         onChanged: (text) => setAnswer(text),
         keyboardType: TextInputType.number,
+        style: TextStyle(fontSize: 20),
       );
 }

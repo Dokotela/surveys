@@ -11,25 +11,37 @@ class PercentIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         CircularPercentIndicator(
           radius: 60.0,
-          lineWidth: 5.0,
+          lineWidth: 7.0,
           percent: index / total,
-          footer: Text(
-            'Screen\n'
+          center: Text(
             '${index + 1}/$total',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          progressColor: Colors.green,
+          header: Text(
+            'Screen',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Colors.white,
+          progressColor: Colors.blue[900],
         ),
         CircularPercentIndicator(
           radius: 60.0,
-          lineWidth: 5.0,
+          lineWidth: 7.0,
           percent: percentComplete,
-          footer: Text('${(percentComplete * 100).toInt()}'
-              '%\nComplete'),
-          progressColor: Colors.green,
+          center: Text(
+            '${(percentComplete * 100).toInt()}%',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          header: Text(
+            'Answered',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Colors.white,
+          progressColor: Colors.blue[900],
         )
       ],
     );
