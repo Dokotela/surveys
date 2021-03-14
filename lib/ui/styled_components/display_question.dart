@@ -11,39 +11,95 @@ class DisplayQuestion extends StatelessWidget {
   StatelessWidget _byType() {
     switch (controller.type) {
       case QuestionnaireItemType.boolean:
-        return BooleanResponse(controller.setCurrentAnswer, controller.initial);
+        return BooleanResponse(
+          controller.setCurrentAnswer,
+          controller.initial,
+          controller.linkId,
+        );
 
       case QuestionnaireItemType.choice:
         {
           if (controller.multipleChoice) {
-            return MultipleChoiceResponse(controller.setCurrentAnswer,
-                controller.choiceResponses, controller.initial);
+            return MultipleChoiceResponse(
+              controller.setCurrentAnswer,
+              controller.choiceResponses,
+              controller.initial,
+              controller.linkId,
+              controller.freeText != null
+                  ? TextResponse(
+                      controller.setCurrentAnswer,
+                      controller.initialFreeText(controller.freeText!.linkId!),
+                      controller.freeText!.linkId,
+                      controller.freeText!.text,
+                    )
+                  : null,
+            );
           } else {
-            return SingleChoiceResponse(controller.setCurrentAnswer,
-                controller.choiceResponses, controller.initial);
+            return SingleChoiceResponse(
+              controller.setCurrentAnswer,
+              controller.choiceResponses,
+              controller.initial,
+              controller.linkId,
+              controller.freeText != null
+                  ? TextResponse(
+                      controller.setCurrentAnswer,
+                      controller.initialFreeText(controller.freeText!.linkId!),
+                      controller.freeText!.linkId,
+                      controller.freeText!.text,
+                    )
+                  : null,
+            );
           }
         }
       case QuestionnaireItemType.date:
-        return DateResponse(controller.setCurrentAnswer, controller.initial);
+        return DateResponse(
+          controller.setCurrentAnswer,
+          controller.initial,
+          controller.linkId,
+        );
 
       case QuestionnaireItemType.datetime:
         return DateTimeResponse(
-            controller.setCurrentAnswer, controller.initial);
+          controller.setCurrentAnswer,
+          controller.initial,
+          controller.linkId,
+        );
 
       case QuestionnaireItemType.decimal:
-        return DecimalResponse(controller.setCurrentAnswer, controller.initial);
+        return DecimalResponse(
+          controller.setCurrentAnswer,
+          controller.initial,
+          controller.linkId,
+        );
 
       case QuestionnaireItemType.integer:
-        return IntegerResponse(controller.setCurrentAnswer, controller.initial);
+        return IntegerResponse(
+          controller.setCurrentAnswer,
+          controller.initial,
+          controller.linkId,
+        );
 
       case QuestionnaireItemType.string:
-        return StringResponse(controller.setCurrentAnswer, controller.initial);
+        return StringResponse(
+          controller.setCurrentAnswer,
+          controller.initial,
+          controller.linkId,
+        );
 
       case QuestionnaireItemType.text:
-        return TextResponse(controller.setCurrentAnswer, controller.initial);
+        return TextResponse(
+          controller.setCurrentAnswer,
+          controller.initial,
+          controller.linkId,
+          controller.text,
+        );
 
       case QuestionnaireItemType.time:
-        return TimeResponse(controller.setCurrentAnswer, controller.initial);
+        return TimeResponse(
+          controller.setCurrentAnswer,
+          controller.initial,
+          controller.linkId,
+        );
 
       default:
         return Container();
@@ -63,24 +119,26 @@ class DisplayQuestion extends StatelessWidget {
                     style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ))
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(height: Get.height * .03),
-                      Text(controller.groupText,
-                          style: TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.bold)),
-                      Container(height: Get.height * .03),
-                      Text(controller.text, style: TextStyle(fontSize: 24)),
-                      Expanded(
-                        child: Scrollbar(
-                          isAlwaysShown: true,
-                          child: SingleChildScrollView(
-                            child: _byType(),
+                : Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(height: Get.height * .03),
+                        Text(controller.groupText,
+                            style: TextStyle(
+                                fontSize: 30, fontWeight: FontWeight.bold)),
+                        Container(height: Get.height * .03),
+                        Text(controller.text, style: TextStyle(fontSize: 24)),
+                        Expanded(
+                          child: Scrollbar(
+                            isAlwaysShown: true,
+                            child: SingleChildScrollView(
+                              child: _byType(),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
           ),
         ),

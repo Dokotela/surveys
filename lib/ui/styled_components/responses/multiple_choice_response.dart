@@ -2,12 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MultipleChoiceResponse extends StatelessWidget {
-  MultipleChoiceResponse(this.setAnswer, this.answers, this.initialAnswer);
+  MultipleChoiceResponse(
+    this.setAnswer,
+    this.answers,
+    this.initialAnswer,
+    this.linkId,
+    this.freeText,
+  );
 
   final Function setAnswer;
   final List<String> answers;
   final List<String> initialAnswer;
   final TextEditingController controller = TextEditingController();
+  final String? linkId;
+  final Widget? freeText;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +40,9 @@ class MultipleChoiceResponse extends StatelessWidget {
                   value: _getChoice(i),
                   onChanged: (changed) {
                     if (changed ?? false) {
-                      setAnswer(answers[i]);
+                      setAnswer(answers[i], linkId);
                     } else {
-                      setAnswer(answers[i], true);
+                      setAnswer(answers[i], linkId, true);
                     }
                     choice[i].value = changed ?? false;
                   },
@@ -45,6 +53,9 @@ class MultipleChoiceResponse extends StatelessWidget {
           ),
         );
       }
+    }
+    if (freeText != null) {
+      options.add(freeText!);
     }
     return Column(children: options);
   }

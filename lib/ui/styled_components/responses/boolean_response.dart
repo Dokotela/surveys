@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BooleanResponse extends StatelessWidget {
-  BooleanResponse(this.setAnswer, this.initialAnswer);
+  BooleanResponse(this.setAnswer, this.initialAnswer, this.linkId);
 
   final Function setAnswer;
   final List<String> initialAnswer;
   final TextEditingController controller = TextEditingController();
+  final String? linkId;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,7 @@ class BooleanResponse extends StatelessWidget {
               value: false,
               groupValue: boolean.value,
               onChanged: (newBool) {
-                setAnswer('False');
+                setAnswer('False', linkId);
                 boolean.value = false;
               },
             ),

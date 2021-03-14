@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DateResponse extends StatelessWidget {
-  DateResponse(this.setAnswer, List<String> initialAnswer) {
+  DateResponse(this.setAnswer, List<String> initialAnswer, this.linkId) {
     initialValue = initialAnswer.isEmpty
         ? DateTime.now()
         : DateTime.tryParse(initialAnswer[0]) ?? DateTime.now();
@@ -10,6 +10,7 @@ class DateResponse extends StatelessWidget {
 
   final Function setAnswer;
   late final DateTime initialValue;
+  final String? linkId;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,8 @@ class DateResponse extends StatelessWidget {
             (date) {
               if (date != null) {
                 dateTime.value = date;
-                setAnswer(dateTime.value?.toIso8601String() ?? initialValue);
+                setAnswer(
+                    dateTime.value?.toIso8601String() ?? initialValue, linkId);
               }
             },
           ),

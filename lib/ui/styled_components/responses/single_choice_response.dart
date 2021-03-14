@@ -2,12 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SingleChoiceResponse extends StatelessWidget {
-  SingleChoiceResponse(this.setAnswer, this.answers, this.initialAnswer);
+  SingleChoiceResponse(
+    this.setAnswer,
+    this.answers,
+    this.initialAnswer,
+    this.linkId,
+    this.freeText,
+  );
 
   final Function setAnswer;
   final List<String> answers;
   final List<String> initialAnswer;
   final TextEditingController controller = TextEditingController();
+  final String? linkId;
+  final Widget? freeText;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +34,7 @@ class SingleChoiceResponse extends StatelessWidget {
               value: i,
               groupValue: choice.value,
               onChanged: (changed) {
-                setAnswer(answers[i]);
+                setAnswer(answers[i], linkId);
                 choice.value = i;
               },
             ),

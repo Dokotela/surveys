@@ -189,6 +189,13 @@ const prapareSurvey = {
                   "required": false,
                   "linkId": "/93043-8/32624-9/LA46-8",
                   "text": "Please write",
+                  "code": [
+                    {
+                      "code": "22017-8",
+                      "display": "State defined narrative Narrative",
+                      "system": "http://loinc.org"
+                    }
+                  ],
                   "enableWhen": [
                     {
                       "answerCoding": {

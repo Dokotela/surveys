@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+/// Accepts 3 required arguments, the [index] of the current
+/// question, the [total] number of screens for this particular questionnaire
+/// and the [percentComplete] of the questions (questions that have already)
+/// been answered. It displays these as two CircularIndicators at the top left
+/// and right of the screens
 class PercentIndicator extends StatelessWidget {
   PercentIndicator(this.index, this.total, this.percentComplete);
 
