@@ -293,7 +293,7 @@ class SurveyController extends GetxController {
   void _findLastAnsweredQuestion() {
     var tempIndex = _keys.length - 1;
     var responseItem = _getAnswerItem(_keys[tempIndex], _response.item!);
-    while (tempIndex >= 0 && responseItem!.answer!.isEmpty) {
+    while (tempIndex >= 0 && (responseItem!.answer?.isEmpty ?? true)) {
       responseItem = _getAnswerItem(_keys[tempIndex], _response.item!);
       tempIndex--;
     }

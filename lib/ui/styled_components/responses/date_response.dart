@@ -14,7 +14,7 @@ class DateResponse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Rx<DateTime>? dateTime = Rx<DateTime>();
+    Rx<DateTime>? dateTime = initialValue.obs;
     return Column(
       children: [
         ElevatedButton(
@@ -32,15 +32,13 @@ class DateResponse extends StatelessWidget {
             (date) {
               if (date != null) {
                 dateTime.value = date;
-                setAnswer(
-                    dateTime.value?.toIso8601String() ?? initialValue, linkId);
+                setAnswer(dateTime.value.toIso8601String());
               }
             },
           ),
           child: Text('Click to Enter Date'),
         ),
-        Obx(() => Text(
-            dateTime.value?.toIso8601String() ?? initialValue.toIso8601String(),
+        Obx(() => Text(dateTime.value.toIso8601String(),
             style: TextStyle(fontSize: 20))),
       ],
     );

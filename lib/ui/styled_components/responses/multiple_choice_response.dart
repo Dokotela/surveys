@@ -21,7 +21,7 @@ class MultipleChoiceResponse extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> options = [];
     final choice = <RxBool>[];
-    bool _getChoice(int i) => choice[i].value!;
+    bool _getChoice(int i) => choice[i].value;
 
     for (var i = 0; i < answers.length; i++) {
       if (answers.isNotEmpty) {

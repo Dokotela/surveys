@@ -19,7 +19,7 @@ class DateTimeResponse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Rx<DateTime>? dateTime = Rx<DateTime>();
+    Rx<DateTime>? dateTime = initialDate.obs;
     return Column(
       children: [
         ElevatedButton(
@@ -40,18 +40,11 @@ class DateTimeResponse extends StatelessWidget {
                   date.year,
                   date.month,
                   date.day,
-                  dateTime.value?.hour ?? 0,
-                  dateTime.value?.minute ?? 0,
+                  dateTime.value.hour,
+                  dateTime.value.minute,
                 );
                 setAnswer(
-                  dateTime.value?.toIso8601String() ??
-                      DateTime(
-                        initialDate.year,
-                        initialDate.month,
-                        initialDate.day,
-                        initialTime.hour,
-                        initialTime.minute,
-                      ),
+                  dateTime.value.toIso8601String(),
                   linkId,
                 );
               }
@@ -72,21 +65,14 @@ class DateTimeResponse extends StatelessWidget {
             (time) {
               if (time != null) {
                 dateTime.value = DateTime(
-                  dateTime.value?.year ?? DateTime.now().year,
-                  dateTime.value?.month ?? DateTime.now().month,
-                  dateTime.value?.day ?? DateTime.now().day,
+                  dateTime.value.year,
+                  dateTime.value.month,
+                  dateTime.value.day,
                   time.hour,
                   time.minute,
                 );
                 setAnswer(
-                  dateTime.value?.toIso8601String() ??
-                      DateTime(
-                        initialDate.year,
-                        initialDate.month,
-                        initialDate.day,
-                        initialTime.hour,
-                        initialTime.minute,
-                      ),
+                  dateTime.value.toIso8601String(),
                   linkId,
                 );
               }
@@ -94,15 +80,7 @@ class DateTimeResponse extends StatelessWidget {
           ),
           child: Text('Click to Enter Time'),
         ),
-        Obx(() => Text(
-            dateTime.value?.toIso8601String() ??
-                DateTime(
-                  initialDate.year,
-                  initialDate.month,
-                  initialDate.day,
-                  initialTime.hour,
-                  initialTime.minute,
-                ).toIso8601String(),
+        Obx(() => Text(dateTime.value.toIso8601String(),
             style: TextStyle(fontSize: 20))),
       ],
     );

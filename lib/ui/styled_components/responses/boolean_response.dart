@@ -11,13 +11,13 @@ class BooleanResponse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Rx<bool> boolean = initialAnswer.isEmpty
-        ? Rx<bool>()
+    final RxnBool boolean = initialAnswer.isEmpty
+        ? RxnBool()
         : initialAnswer[0].toLowerCase() == 'true'
-            ? Rx<bool>(true)
+            ? RxnBool(true)
             : initialAnswer[0].toLowerCase() == 'false'
-                ? Rx<bool>(false)
-                : Rx<bool>();
+                ? RxnBool(false)
+                : RxnBool();
     return Obx(
       () => Column(
         children: [

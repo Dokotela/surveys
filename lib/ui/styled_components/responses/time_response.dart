@@ -15,7 +15,7 @@ class TimeResponse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Rx<TimeOfDay>? dateTime = Rx<TimeOfDay>();
+    Rx<TimeOfDay>? dateTime = initialValue.obs;
     return Column(
       children: [
         ElevatedButton(
@@ -41,7 +41,7 @@ class TimeResponse extends StatelessWidget {
           child: Text('Click to Enter Time'),
         ),
         Obx(() => Text(
-              dateTime.value?.toString() ?? initialValue.toString(),
+              dateTime.value.toString(),
               style: TextStyle(fontSize: 20),
             )),
       ],

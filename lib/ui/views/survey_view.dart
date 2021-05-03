@@ -22,9 +22,9 @@ class SurveyView extends StatelessWidget {
                 children: [
                   /// displays the indicators of completion at the top
                   PercentIndicator(
-                    controller!.index,
-                    controller!.totalScreens,
-                    controller!.percentComplete,
+                    controller.index,
+                    controller.totalScreens,
+                    controller.percentComplete,
                   ),
 
                   Container(height: Get.height * .02),
@@ -37,14 +37,14 @@ class SurveyView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
-                          onPressed: () => controller!.back(),
+                          onPressed: () => controller.back(),
                           child: Text('Back', style: TextStyle(fontSize: 24))),
                       // ElevatedButton(
                       //     onPressed: () =>
                       //         print(controller!.getResponse.toJson()),
                       //     child: Text('Print', style: TextStyle(fontSize: 24))),
                       ElevatedButton(
-                          onPressed: () => controller!.next(),
+                          onPressed: () => controller.next(),
                           child: Text('Next', style: TextStyle(fontSize: 24))),
                     ],
                   ),
