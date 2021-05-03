@@ -44,42 +44,36 @@ class SurveyController extends GetxController {
 
   /// GETTER FUNCTIONS
   String get _activeLinkId => _keys[_index.value];
+  int get index => _index.value;
+  int get totalScreens => _keys.length;
+  double get percentComplete => _questionsTotal.value == 0
+      ? 100
+      : _questionsAnswered / _questionsTotal.value;
+  bool get isFreeText => _currentItem!.code != null &&
+          _currentItem!.code!.length == 1 &&
+          _currentItem!.code![0].code == Code('22017-8') &&
+          _currentItem!.code![0].display ==
+              'State defined narrative Narrative' &&
+          _currentItem!.code![0].system == FhirUri('http://loinc.org')
+      ? true
+      : false;
+  QuestionnaireItemType? get type =>
+      _currentItem?.type ?? QuestionnaireItemType.display;
+  String? get linkId => _currentItem?.linkId;
+  List<String> get initial => initialAnswer(
+      initialResponse: _currentItem?.initial,
+      type: _currentItem?.type,
+      responseAnswer:
+          _getAnswerItem(_keys[index], _response.item!)?.answer ?? []);
   // QuestionnaireResponse get getResponse => _response;
-  // double get percentComplete => _questionsTotal.value == 0
-  //     ? 0
-  //     : _questionsAnswered / _questionsTotal.value;
-  // int get index => _index.value;
-  // int get totalScreens => _keys.length;
   // String get text => _currentItem?.text ?? '';
   // bool get multipleChoice => _currentItem?.repeats?.value ?? false;
-  // String? get linkId => _currentItem?.linkId;
   // QuestionnaireItem? get freeText => _freeTextItem;
-  // List<String> get initial => initialAnswer(
-  //     initialResponse: _currentItem?.initial,
-  //     type: _currentItem?.type,
-  //     responseAnswer:
-  //         _getAnswerItem(_keys[index], _response.item!)?.answer ?? []);
-  // QuestionnaireItemType? get type =>
-  //     _currentItem?.type ?? QuestionnaireItemType.display;
   // List<String> get choiceResponses => _currentItem?.answerOption == null
   //     ? []
   //     : _currentItem!.answerOption!
   //         .map((answer) => answer.valueCoding?.display ?? '')
   //         .toList();
-  // bool get isFreeText {
-  //   if (_currentItem!.code != null) {
-  //     if (_currentItem!.code!.length == 1) {
-  //       if (_currentItem!.code![0].code == Code('22017-8') &&
-  //           _currentItem!.code![0].display ==
-  //               'State defined narrative Narrative' &&
-  //           _currentItem!.code![0].system == FhirUri('http://loinc.org')) {
-  //         return true;
-  //       }
-  //     }
-  //   }
-  //   return false;
-  // }
-
   // List<String> initialFreeText(String linkId) {
   //   final curLinkId = _currentItem!.linkId;
   //   _setCurrentItem(linkId, _questionnaire.item!, 0);
@@ -88,7 +82,7 @@ class SurveyController extends GetxController {
   //   return returnList;
   // }
 
-  /// looks through the QuestionnaireResponse items passed to it to fidn the
+  /// looks through the QuestionnaireResponse items passed to it to find the
   /// item with the same linkId, calls itself recursively until it finds it
   QuestionnaireResponseItem? _getAnswerItem(
       String linkId, List<QuestionnaireResponseItem> items) {
@@ -114,8 +108,9 @@ class SurveyController extends GetxController {
 
   /// SETTER FUNCTIONS
   ///
-  /// accepts the [linkId], a list of [QuestionnaireItem]s and an int [level]
-  /// as arguments. Uses the level when figuring out how deeply nested questions
+  /// accepts a list of [QuestionnaireItem]s and an int [level] as arguments.
+  /// Uses the level when figuring out how deeply are questions nested. Uses
+  /// the [_activeLinkId] which is referenced by the [_index];
   /// are.
   int _setCurrentItem(List<QuestionnaireItem> items, int level) {
     for (var item in items) {
@@ -162,40 +157,53 @@ class SurveyController extends GetxController {
     }
   }
 
-  // void setCurrentAnswer(String answer, String linkId, [bool remove = false]) {
-  //   _setCurrentItem(linkId, _questionnaire.item!, 0);
-  //   final responseAnswer = _getAnswerItem(linkId, _response.item!);
-  //   if (responseAnswer!.answer!.isEmpty) {
-  //     _questionsAnswered++;
-  //   }
-  //   if (!(_currentItem?.repeats?.value ?? false)) {
-  //     responseAnswer.answer!.clear();
-  //   }
-  //   addAnswer(answer, responseAnswer, _currentItem, remove);
-  // }
+  /// finds the index of the [linkId], and sets the current item using this
+  /// value. It then gets the corresponding item in the QuestionnaireResponse,
+  /// If the answer repeats (can hold multiple responses), it adds the answer.
+  /// Otherwise, this means that the answer needs to be changed, so the answers
+  /// are cleared before the new one is added.
+  void setCurrentAnswer(String answer, String linkId, [bool remove = false]) {
+    _index.value = _keys.indexOf(linkId);
+    _setCurrentItem(_questionnaire.item!, 0);
+    final responseAnswer = _getAnswerItem(linkId, _response.item!);
+    if (responseAnswer!.answer!.isEmpty) {
+      _questionsAnswered++;
+    }
+    if (!(_currentItem?.repeats?.value ?? false)) {
+      responseAnswer.answer!.clear();
+    }
+    addAnswer(answer, responseAnswer, _currentItem, remove);
+  }
 
   /// EVENTS
-  // void next() {
-  //   _index.value = _index.value + 1 >= _keys.length ? 0 : _index.value + 1;
-  //   _setCurrentItem(_keys[_index.value], _questionnaire.item!, 0);
-  //   if (isFreeText) {
-  //     next();
-  //   }
-  //   update();
-  // }
+  ///
+  /// next increases the [_index] by 1, this allows [_setCurrentItem] to use the
+  /// new index to locate the next Item based on the [_activeLinkId]
+  void next() {
+    final newIndex = _index.value + 1;
+    _index.value = newIndex >= _keys.length ? 0 : newIndex;
+    _setCurrentItem(_questionnaire.item!, 0);
+    if (isFreeText) {
+      next();
+    }
+  }
 
-  // void back() {
-  //   _index.value = _index.value - 1 < 0 ? _keys.length - 1 : _index.value - 1;
-  //   _setCurrentItem(_keys[_index.value], _questionnaire.item!, 0);
-  //   if (isFreeText) {
-  //     back();
-  //   }
-  // }
+  /// next decreases the [_index] by 1, this allows [_setCurrentItem] to use the
+  /// new index to locate the next Item based on the [_activeLinkId]
+  void back() {
+    final newIndex = _index.value - 1;
+    _index.value = newIndex < 0 ? _keys.length - 1 : newIndex;
+    _setCurrentItem(_questionnaire.item!, 0);
+    if (isFreeText) {
+      back();
+    }
+  }
 
   /// INIT - maybe I'll try putting all of the init methods down here together
   @override
   void onInit() {
-    _initQuestionnaire(Get.arguments[0]);
+    _initQuestionnaire(
+        Get.arguments[0] is Questionnaire ? Get.arguments[0] : null);
     _initResponse(Get.arguments);
     _findLastAnsweredQuestion();
     _setCurrentItem(_questionnaire.item!, 0);
@@ -204,16 +212,10 @@ class SurveyController extends GetxController {
 
   /// ensures that a Questionnaire has been passed, and initializes the
   /// questionnaire in that case
-  void _initQuestionnaire(Questionnaire? questionnaire) {
-    if (Get.arguments[0] == null) {
-      throw Exception(
-          'You must pass a FHIR Questionnaire to the Survey Controller!');
-    } else if (Get.arguments[0]! is Questionnaire) {
-      throw Exception(
-          'You must pass a FHIR Questionnaire to the Survey Controller!');
-    }
-    _questionnaire = Get.arguments[0];
-  }
+  void _initQuestionnaire(Questionnaire? questionnaire) => questionnaire == null
+      ? throw Exception(
+          'You must pass a FHIR Questionnaire to the Survey Controller!')
+      : _questionnaire = Get.arguments[0];
 
   /// if there is a second argument, and it is a QuestionnaireResponse,
   /// assign it to the response, otherwise, initialize the response
@@ -285,15 +287,15 @@ class SurveyController extends GetxController {
 
   /// runs through the questionnaire backwards to forward, iteratively looping
   /// through _getAnswerItem, until it either reaches the beginning of the
-  /// questionnaire, or finds the last answered question - this avoid having
+  /// questionnaire, or finds the last answered question - this avoids having
   /// the questionnaire start at a skipped question instead of using the last
   /// answered one - ToDo: is this the way we should be traversing?
   void _findLastAnsweredQuestion() {
     var tempIndex = _keys.length - 1;
     var responseItem = _getAnswerItem(_keys[tempIndex], _response.item!);
-    while (tempIndex >= 0 && responseItem!.answer!.isNotEmpty) {
-      tempIndex--;
+    while (tempIndex >= 0 && responseItem!.answer!.isEmpty) {
       responseItem = _getAnswerItem(_keys[tempIndex], _response.item!);
+      tempIndex--;
     }
     _index.value = tempIndex + 1;
   }
