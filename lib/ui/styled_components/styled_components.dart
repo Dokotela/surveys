@@ -3,20 +3,7 @@ export 'responses/responses.dart';
 export 'percent_indicator.dart';
 
 /// https://www.hl7.org/fhir/valueset-item-type.html
-/// ToDo: group
-/// ToDo: display
-/// question
-/// boolean
-/// decimal
-/// integer
-/// date
-/// dateTime
-/// time
-/// string
-/// text
 /// ToDo: url
-/// ToDo: choice
-/// ToDo: open-choice
 /// ToDo: attachment
 /// ToDo: reference
 /// ToDo: quantity

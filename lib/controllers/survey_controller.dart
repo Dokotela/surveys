@@ -43,12 +43,26 @@ class SurveyController extends GetxController {
   QuestionnaireItem? _freeTextItem;
 
   /// GETTER FUNCTIONS
+  ///
+  /// uses the current [_index] to find the active linkId from the [_keys]
   String get _activeLinkId => _keys[_index.value];
+
+  /// the current index of the active question
   int get index => _index.value;
+
+  /// how many screens could be displayed for the entire questionnaire, used
+  /// for display how far the user is in the current questionnaire
   int get totalScreens => _keys.length;
+
+  /// returns the percentage of answers that the user has completed
   double get percentComplete => _questionsTotal.value == 0
       ? 100
       : _questionsAnswered / _questionsTotal.value;
+
+  /// idiosyncracy of our system. Allows you to define a free text answer
+  /// nested under another question. It will be built to be dependent on an
+  /// answer to that question, but will always appear on the same screen, even
+  /// in a mode that normally only displays one question per screen
   bool get isFreeText => _currentItem!.code != null &&
           _currentItem!.code!.length == 1 &&
           _currentItem!.code![0].code == Code('22017-8') &&
@@ -57,23 +71,60 @@ class SurveyController extends GetxController {
           _currentItem!.code![0].system == FhirUri('http://loinc.org')
       ? true
       : false;
+
+  /// returns the [QuestionnaireItemType]
   QuestionnaireItemType? get type =>
       _currentItem?.type ?? QuestionnaireItemType.display;
+
+  /// returns the linkId of the current active questionnaire item
   String? get linkId => _currentItem?.linkId;
+
+  /// checks for an initialAnswer to a questionnaire item. It first checks to
+  /// see if there is an answer that has already been specified by the user,
+  /// if not, then it checks if there is an initial value set by the
+  /// questionnaire itself
   List<String> get initial => initialAnswer(
       initialResponse: _currentItem?.initial,
       type: _currentItem?.type,
       responseAnswer:
           _getAnswerItem(_keys[index], _response.item!)?.answer ?? []);
+
+  /// Gets the primary text that should be displayed with the item, for a group
+  /// or display it will just be text, for a question, it will be the text of
+  /// the question
+  String get text => _currentItem?.text ?? '';
+
+  /// Checks to see if it can have more than one answer. This technically means
+  /// either that the question can be repeated in the questionnaire OR that it
+  /// can have multiple answers for a single question. We have unilaterally
+  /// decided to only implement the latter. This getter is only called in
+  /// items of type choice or open_choice
+  bool get multipleChoice => _currentItem?.repeats?.value ?? false;
+
+  /// returns a list of strings to display as the answer choices (should make)
+  /// it easier for the front end renderer to ignore the types of choices
+  /// and just display the strings passed. It looks through in the order
+  /// seen below and checks to see which is not null (in official FHIR there
+  /// should only be one of these fields allowed per answerOption, but Dart
+  /// doesn't allow us to do that easily, and it has not been implemented yet)
+  List<String> get choiceResponses => _currentItem?.answerOption == null
+      ? []
+      : _currentItem!.answerOption!
+          .map((answer) =>
+              answer.valueCoding?.display ??
+              answer.valueString ??
+              answer.valueInteger?.toString() ??
+              answer.valueInteger?.toString() ??
+              answer.valueDate?.toString() ??
+              answer.valueTime?.toString() ??
+              answer.valueReference?.display ??
+              '')
+          .toList();
+
   // QuestionnaireResponse get getResponse => _response;
-  // String get text => _currentItem?.text ?? '';
-  // bool get multipleChoice => _currentItem?.repeats?.value ?? false;
+
   // QuestionnaireItem? get freeText => _freeTextItem;
-  // List<String> get choiceResponses => _currentItem?.answerOption == null
-  //     ? []
-  //     : _currentItem!.answerOption!
-  //         .map((answer) => answer.valueCoding?.display ?? '')
-  //         .toList();
+
   // List<String> initialFreeText(String linkId) {
   //   final curLinkId = _currentItem!.linkId;
   //   _setCurrentItem(linkId, _questionnaire.item!, 0);
