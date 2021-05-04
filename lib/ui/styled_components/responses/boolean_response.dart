@@ -27,7 +27,7 @@ class BooleanResponse extends StatelessWidget {
               value: true,
               groupValue: boolean.value,
               onChanged: (newBool) {
-                setAnswer('True');
+                setAnswer('True', linkId);
                 boolean.value = true;
               },
             ),

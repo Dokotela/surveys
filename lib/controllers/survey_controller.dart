@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 class SurveyController extends GetxController {
   /// PROPERTIES
-  ///
+
   /// index of the currentItem because I can't find a better way to make it
   /// observable each time I change items
   final _index = 0.obs;
@@ -43,7 +43,7 @@ class SurveyController extends GetxController {
   QuestionnaireItem? _freeTextItem;
 
   /// GETTER FUNCTIONS
-  ///
+
   /// uses the current [_index] to find the active linkId from the [_keys]
   String get _activeLinkId => _keys[_index.value];
 
@@ -121,10 +121,10 @@ class SurveyController extends GetxController {
               '')
           .toList();
 
-  // QuestionnaireResponse get getResponse => _response;
+  /// Return the current QuestionnaireResponse
+  QuestionnaireResponse get getResponse => _response;
 
   // QuestionnaireItem? get freeText => _freeTextItem;
-
   // List<String> initialFreeText(String linkId) {
   //   final curLinkId = _currentItem!.linkId;
   //   _setCurrentItem(linkId, _questionnaire.item!, 0);
@@ -152,13 +152,8 @@ class SurveyController extends GetxController {
     }
   }
 
-  // bool checkAnswer(String linkId, QuestionnaireAnswerOption answerOption) {
-  //   final answerItem = _getAnswerItem(linkId, _response.item!);
-  //   return answerItem?.answer?.contains(answerOption) ?? false;
-  // }
-
   /// SETTER FUNCTIONS
-  ///
+
   /// accepts a list of [QuestionnaireItem]s and an int [level] as arguments.
   /// Uses the level when figuring out how deeply are questions nested. Uses
   /// the [_activeLinkId] which is referenced by the [_index];
@@ -227,7 +222,7 @@ class SurveyController extends GetxController {
   }
 
   /// EVENTS
-  ///
+
   /// next increases the [_index] by 1, this allows [_setCurrentItem] to use the
   /// new index to locate the next Item based on the [_activeLinkId]
   void next() {
