@@ -1,8 +1,9 @@
-import 'package:fhir_surveys/controllers/survey_controller.dart';
-import 'package:fhir_surveys/ui/styled_components/percent_indicator.dart';
-import 'package:fhir_surveys/ui/styled_components/styled_components.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../controllers/survey_controller.dart';
+import '../../ui/styled_components/percent_indicator.dart';
+import '../../ui/styled_components/styled_components.dart';
 
 /// Base class for displaying the particular survey in question
 class SurveyView extends StatelessWidget {

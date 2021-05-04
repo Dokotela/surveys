@@ -1,7 +1,9 @@
 import 'package:fhir/r4.dart';
-import 'package:fhir_surveys/_internal/utils/initial_answer.dart';
-import 'package:fhir_surveys/_internal/utils/utils.dart';
 import 'package:get/get.dart';
+
+import '../_internal/constants/questionnaire_item_control.dart';
+import '../_internal/utils/initial_answer.dart';
+import '../_internal/utils/utils.dart';
 
 class SurveyController extends GetxController {
   /// PROPERTIES
@@ -123,6 +125,18 @@ class SurveyController extends GetxController {
 
   /// Return the current QuestionnaireResponse
   QuestionnaireResponse get getResponse => _response;
+
+  /// Returns QuestionnaireItemControl Extension
+  ItemControl? get questionnaireItemControl {
+    if (_currentItem?.extension_ != null &&
+        _currentItem!.extension_!.isNotEmpty) {
+      final extensionIndex = _currentItem!.extension_!.indexWhere((element) =>
+          element.url ==
+          FhirUri(
+              'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl'));
+      return itemControlToEnum[_currentItem!.extension_![extensionIndex]];
+    }
+  }
 
   // QuestionnaireItem? get freeText => _freeTextItem;
   // List<String> initialFreeText(String linkId) {

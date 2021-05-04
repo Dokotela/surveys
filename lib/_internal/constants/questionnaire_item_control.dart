@@ -1,5 +1,100 @@
 import 'package:fhir/r4.dart';
 
+final enumToItemControl = {
+  ItemControl.group: group,
+  ItemControl.list: list,
+  ItemControl.table: table,
+  ItemControl.htable: htable,
+  ItemControl.gtable: gtable,
+  ItemControl.atable: atable,
+  ItemControl.header: header,
+  ItemControl.footer: footer,
+  ItemControl.text: text,
+  ItemControl.inline: inline,
+  ItemControl.prompt: prompt,
+  ItemControl.unit: unit,
+  ItemControl.lower: lower,
+  ItemControl.upper: upper,
+  ItemControl.flyover: flyover,
+  ItemControl.help: help,
+  ItemControl.question: question,
+  ItemControl.autocomplete: autocomplete,
+  ItemControl.drop_down: dropDown,
+  ItemControl.check_box: checkBox,
+  ItemControl.lookup: lookup,
+  ItemControl.radio_button: radioButton,
+  ItemControl.slider: slider,
+  ItemControl.spinner: spinner,
+  ItemControl.text_box: textBox,
+};
+
+final itemControlToEnum = {
+  group: ItemControl.group,
+  list: ItemControl.list,
+  table: ItemControl.table,
+  htable: ItemControl.htable,
+  gtable: ItemControl.gtable,
+  atable: ItemControl.atable,
+  header: ItemControl.header,
+  footer: ItemControl.footer,
+  text: ItemControl.text,
+  inline: ItemControl.inline,
+  prompt: ItemControl.prompt,
+  unit: ItemControl.unit,
+  lower: ItemControl.lower,
+  upper: ItemControl.upper,
+  flyover: ItemControl.flyover,
+  help: ItemControl.help,
+  question: ItemControl.question,
+  autocomplete: ItemControl.autocomplete,
+  dropDown: ItemControl.drop_down,
+  checkBox: ItemControl.check_box,
+  lookup: ItemControl.lookup,
+  radioButton: ItemControl.radio_button,
+  slider: ItemControl.slider,
+  spinner: ItemControl.spinner,
+  textBox: ItemControl.text_box,
+};
+
+enum ItemControl {
+  group,
+  list,
+  table,
+  htable,
+  gtable,
+  atable,
+  header,
+  footer,
+  text,
+  inline,
+  prompt,
+  unit,
+  lower,
+  upper,
+  flyover,
+  help,
+  question,
+  autocomplete,
+  drop_down,
+  check_box,
+  lookup,
+  radio_button,
+  slider,
+  spinner,
+  text_box,
+}
+
+final group = FhirExtension(
+    url: FhirUri(
+        'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl'),
+    valueCodeableConcept: CodeableConcept(coding: [
+      Coding(
+        system: FhirUri('http://hl7.org/fhir/questionnaire-item-control'),
+        code: Code('group'),
+        display: 'Group',
+      )
+    ]));
+
 final list = FhirExtension(
     url: FhirUri(
         'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl'),
